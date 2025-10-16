@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>Subir empleado</title></head>
+<body>
+<h1>Subir empleado</h1>
+<form th:action="@{/employee}" th:object="${employee}" method="post" enctype="multipart/form-data">
+    <p>name: <input type="text" th:field="*{name}" /></p>
+    <p>document: <input type="file" th:field="*{document}" /></p>
+    <p>
+        <input type="submit" value="upload"/>
+        <input type="reset" value="reset"/>
+    </p>
+</form>
+</body>
+</html>
