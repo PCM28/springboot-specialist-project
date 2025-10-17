@@ -26,8 +26,8 @@ public class EmployeeController {
     // ---------- 1) FORM HTML + @ModelAttribute ----------
     // Recoge name + file en un POJO, con enctype multipart/form-data (como indica el PDF). :contentReference[oaicite:9]{index=9}
     @PostMapping(path = "/employee", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> saveEmployee(@ModelAttribute Employee employee) throws Exception {
-        String stored = employeeService.save(employee.getName(), employee.getDocument());
+    public ResponseEntity<String> saveEmployeeFromForm(@ModelAttribute Employee employee) throws Exception {
+        String stored = employeeService.saveFromForm(employee.getName(), employee.getDocument());
         return ResponseEntity.ok("Subido como: " + stored);
     }
 
@@ -37,18 +37,18 @@ public class EmployeeController {
     public ResponseEntity<EmployeeOutputDto> saveEmployeeWithRequestPart(
             @RequestPart("employee") EmployeeInputDto employeeInputDto, //{"name":"Ana"} tal cual se coloca en el vaor de su campo en postman, esto por usar @RequestPArt. Si se usaría @RequestParam se envíaría el valor entero como tal: Ana, ya que esta anotación espera un valor no un json como el rpimero
             @RequestPart("document") MultipartFile document) throws Exception {
-        String stored = employeeService.save(employeeInputDto.getName(), document);
-        return ResponseEntity.ok(new EmployeeOutputDto(employeeInputDto.getName(), stored)); // para hacerlo como el proyecto fundations hace falta de Spring JPA, pero para este proyecto no se está usando, para el resto sí
+        EmployeeOutputDto out = employeeService.save(employeeInputDto.getName(), document);
+        return ResponseEntity.ok(out); // para hacerlo como el proyecto fundations hace falta de Spring JPA, pero para este proyecto no se está usando, para el resto sí
     }
 
     // ---------- 3) KEY/VALUE + FILE con @RequestParam ----------
     // Enfoque para datos simples (par clave/valor + archivo), como en el PDF. :contentReference[oaicite:11]{index=11}
     @PostMapping(path = "/requestparam/employee", consumes = MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> saveEmployeeWithRequestParam(
-            @RequestParam("name") String name,
+    public ResponseEntity<EmployeeOutputDto> saveEmployeeWithRequestParam(
+            @RequestParam("employee") String name,
             @RequestPart("document") MultipartFile document) throws Exception {
-        employeeService.save(name, document);
-        return ResponseEntity.ok().build();
+        EmployeeOutputDto out = employeeService.save(name, document);
+        return ResponseEntity.ok(out);
     }
 
     // ---------- Vista del formulario ----------, ask to GPT if I delete this I can still see the form

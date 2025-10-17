@@ -1,6 +1,7 @@
 package com.example.advanded_web_springboot.content.entities.employee.application.Impl;
 
 import com.example.advanded_web_springboot.content.entities.employee.application.service.EmployeeService;
+import com.example.advanded_web_springboot.content.entities.employee.infrastructure.controller.dto.output.EmployeeOutputDto;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
@@ -32,7 +33,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public String save(String employeeName, MultipartFile file) throws IOException {
+    public String saveFromForm(String employeeName, MultipartFile file) throws IOException {
 
         if(file == null || file.isEmpty()) throw new IOException("Archivo vacío");
 
@@ -43,6 +44,18 @@ public class EmployeeServiceImpl implements EmployeeService {
         //Podría persistir (employee, stored) en BD
         return stored;
     }
+
+    @Override
+    public EmployeeOutputDto save(String employeeName, MultipartFile file) throws IOException {
+        if(file == null || file.isEmpty()) throw new IOException("Archivo vacío");
+
+        String original = StringUtils.cleanPath(file.getOriginalFilename());
+        String stored = System.currentTimeMillis() + "-" + original;
+        Files.copy(file.getInputStream(), root.resolve(stored), StandardCopyOption.REPLACE_EXISTING);
+
+        return new EmployeeOutputDto(employeeName, stored);
+    }
+
 
     @Override
     public Stream<Path> list() throws IOException {
