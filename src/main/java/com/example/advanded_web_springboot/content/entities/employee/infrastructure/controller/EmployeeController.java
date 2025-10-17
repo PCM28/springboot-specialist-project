@@ -30,6 +30,20 @@ public class EmployeeController {
         String stored = employeeService.saveFromForm(employee.getName(), employee.getDocument());
         return ResponseEntity.ok("Subido como: " + stored);
     }
+    /*
+    En caso no quieras devolver una vista de respuesta usar @RestController + ResponseEntity:
+
+    @PostMapping(path="/employee", consumes=MediaType.MULTIPART_FORM_DATA_VALUE, produces=MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<EmployeeOutputDto> saveFromFormApi(@ModelAttribute EmployeeInputDto employee, @RequestParam("document") MultipartFile document) throws Exception {
+        EmployeeOutputDto out = employeeService.save(employee.getName(), document);
+        return ResponseEntity.ok(out); // JSON
+    }
+
+    Resumen:
+        - Si quieres pintar una página → devuelve String (nombre de vista).
+        - Si quieres responder JSON (p.ej., llamado desde Postman/Ajax/Angular) → devuelve ResponseEntity<...> o usa @RestController.
+    */
+
 
     // ---------- 2) JSON + FILE con @RequestPart ----------
     // El PDF destaca marcar el JSON como application/json y mandar además el archivo. :contentReference[oaicite:10]{index=10}
